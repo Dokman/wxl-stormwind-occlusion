@@ -1,0 +1,31 @@
+{
+  "manifest": 1,
+
+  "extension": {
+    "id": "wxl-stormwind-occlusion",
+    "version": "1.0.0",
+    "abi": "1.1",
+    "entry": "wxl-stormwind-occlusion.dll",
+    "assets": [],
+    "requires": {},
+    "conflicts": [],
+    "hooks": []
+  },
+
+  "deploy": {
+    "mode": "release",
+    "match": "*.dll"
+  },
+
+  "listing": {
+    "title": "Stormwind Occlusion Fix",
+    "tagline": "Fixes the broken Stormwind occluder that can hide the city portal.",
+    "description": "README.md",
+    "gallery": [],
+    "categories": ["world", "gameplay"],
+    "accent": "#4a7fc8"
+  },
+
+  "license": "GPL-3.0-or-later",
+  "signature": null
+}
