@@ -14,6 +14,8 @@ namespace
 {
     constexpr uintptr_t kEntryAddress = 0xAF0038;
     constexpr uint32_t kDisabledMapId = 9999;
+    constexpr uint32_t kFloatMax = 0x7F7FFFFF;     // FLT_MAX
+    constexpr uint32_t kNegFloatMax = 0xFF7FFFFF;  // -FLT_MAX
 
     struct OccluderEntry
     {
@@ -33,15 +35,15 @@ namespace
 
     bool HasExpectedSignature(const OccluderEntry& entry)
     {
-        return entry.unk1 == 0x450C3B33
-            && entry.unk2 == 0x44198000
-            && entry.unk3 == 0
-            && entry.unk4 == 0
-            && entry.unk5 == 0
-            && entry.unk6 == 0
-            && entry.unk7 == 0
-            && entry.unk8 == 0
-            && entry.unk9 == 0;
+        if (entry.unk1 != 0x450C3B33 || entry.unk2 != 0x44198000 || entry.unk3 != 0)
+            return false;
+        // The bounding box: zero in the file image, but a static initializer in Wow.exe (0x009CED40) sets every
+        // entry's box to the empty box (min FLT_MAX, max -FLT_MAX) before main, so that is what an extension sees.
+        const bool imageBox = entry.unk4 == 0 && entry.unk5 == 0 && entry.unk6 == 0 &&
+                              entry.unk7 == 0 && entry.unk8 == 0 && entry.unk9 == 0;
+        const bool emptyBox = entry.unk4 == kFloatMax && entry.unk5 == kFloatMax && entry.unk6 == kFloatMax &&
+                              entry.unk7 == kNegFloatMax && entry.unk8 == kNegFloatMax && entry.unk9 == kNegFloatMax;
+        return imageBox || emptyBox;
     }
 
     bool WriteMapId(uint32_t mapId)
